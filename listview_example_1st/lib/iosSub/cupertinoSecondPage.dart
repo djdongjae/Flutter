@@ -128,10 +128,10 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
                   child: Text('동물 추가하기'),
                   onPressed: () {
                     widget.animalList?.add(Animal(
-                        animalName: _textController?.value.text,
-                        kind: getKind(_kindChoice),
-                        imagePath: _imagePath,
-                        flyExist: _flyExist));
+                        an: _textController?.value.text,
+                        k: getKind(_kindChoice),
+                        ip: _imagePath,
+                        f: _flyExist));
                   })
             ], mainAxisAlignment: MainAxisAlignment.center,
           ),

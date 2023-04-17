@@ -24,12 +24,12 @@ class CupertinoFirstPage extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Image.asset(
-                        animalList![index].imagePath!,
+                        animalList![index].ip!,
                         fit: BoxFit.contain,
                         width: 80,
                         height: 80,
                       ),
-                      Text(animalList![index].animalName!)
+                      Text(animalList![index].an!)
                     ],
                   ),
                   Container(

@@ -39,31 +39,31 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           title: Text('Listview Example'),
         ),
         body: TabBarView(
-          children: <Widget>[FirstApp(list: animalList), SecondApp(list: animalList)],
-          controller: controller,
+          children: <Widget>[FirstApp(list: al), SecondApp(list: al)],
+          controller: c,
         ),
         bottomNavigationBar: TabBar(tabs: <Tab>[
           Tab(icon: Icon(Icons.looks_one, color: Colors.blue),),
           Tab(icon: Icon(Icons.looks_two, color: Colors.blue,))
-        ], controller: controller,
+        ], controller: c,
         )
     );
   }
-  TabController? controller;
-  List<Animal> animalList = new List.empty(growable: true);
+  TabController? c;
+  List<Animal> al = new List.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 2, vsync: this);
+    c = TabController(length: 2, vsync: this);
 
-    animalList.add(Animal(animalName: "벌", kind: "곤충", imagePath: "repo/images/bee.png"));
-    animalList.add(Animal(animalName: "고양이", kind: "포유류", imagePath: "repo/images/cat.png"));
-    animalList.add(Animal(animalName: "젖소", kind: "포유류", imagePath: "repo/images/cow.png"));
-    animalList.add(Animal(animalName: "강아지", kind: "포유류", imagePath: "repo/images/dog.png"));
-    animalList.add(Animal(animalName: "여우", kind: "포유류", imagePath: "repo/images/fox.png"));
-    animalList.add(Animal(animalName: "원숭이", kind: "영장류", imagePath: "repo/images/monkey.png"));
-    animalList.add(Animal(animalName: "돼지", kind: "포유류", imagePath: "repo/images/pig.png"));
-    animalList.add(Animal(animalName: "늑대", kind: "포유류", imagePath: "repo/images/wolf.png"));
+    al.add(Animal(an: "벌", k: "곤충", ip: "repo/images/bee.png"));
+    al.add(Animal(an: "고양이", k: "포유류", ip: "repo/images/cat.png"));
+    al.add(Animal(an: "젖소", k: "포유류", ip: "repo/images/cow.png"));
+    al.add(Animal(an: "강아지", k: "포유류", ip: "repo/images/dog.png"));
+    al.add(Animal(an: "여우", k: "포유류", ip: "repo/images/fox.png"));
+    al.add(Animal(an: "원숭이", k: "영장류", ip: "repo/images/monkey.png"));
+    al.add(Animal(an: "돼지", k: "포유류", ip: "repo/images/pig.png"));
+    al.add(Animal(an: "늑대", k: "포유류", ip: "repo/images/wolf.png"));
   }
 }

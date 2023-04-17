@@ -18,19 +18,19 @@ class FirstApp extends StatelessWidget {
                     child: Row(
                       children: <Widget>[
                         Image.asset(
-                          list![position].imagePath!,
+                          list![position].ip!,
                           height: 100,
                           width: 100,
                           fit: BoxFit.contain,
                         ),
-                        Text(list![position].animalName!)
+                        Text(list![position].an!)
                       ],
                     ),
                   ),
                   onTap: () {
                     AlertDialog dialog = AlertDialog(
                       content: Text(
-                        '이 동물은 ${list![position].kind}입니다.',
+                        '이 동물은 ${list![position].k}입니다.',
                         style: TextStyle(fontSize: 30.0),
                       ),
                     );

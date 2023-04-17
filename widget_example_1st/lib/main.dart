@@ -21,19 +21,19 @@ class WidgetApp extends StatefulWidget {
 
 class _WidgetExampleState extends State<WidgetApp> {
   String sum = '';
-  TextEditingController value1 = TextEditingController();
+  TextEditingController v1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
   List _buttonList = ['더하기', '빼기', '곱하기', '나누기'];
-  List<DropdownMenuItem<String>> _dropDownMenuItems = new List.empty(growable: true);
+  List<DropdownMenuItem<String>> _dpm = new List.empty(growable: true);
   String? _buttonText;
 
   @override
   void initState() {
     super.initState();
     for(var item in _buttonList) {
-      _dropDownMenuItems.add(DropdownMenuItem(value: item, child: Text(item)));
+      _dpm.add(DropdownMenuItem(value: item, child: Text(item)));
     }
-    _buttonText = _dropDownMenuItems[0].value;
+    _buttonText = _dpm[0].value;
   }
 
   @override
@@ -52,7 +52,7 @@ class _WidgetExampleState extends State<WidgetApp> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
-                child: TextField(keyboardType: TextInputType.number, controller: value1),
+                child: TextField(keyboardType: TextInputType.number, controller: v1),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
@@ -70,7 +70,7 @@ class _WidgetExampleState extends State<WidgetApp> {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
                   onPressed: () {
                     setState(() {
-                      var value1Int = double.parse(value1.value.text);
+                      var value1Int = double.parse(v1.value.text);
                       var value2Int = double.parse(value2.value.text);
                       var result;
                       if (_buttonText == '더하기') {
@@ -96,7 +96,7 @@ class _WidgetExampleState extends State<WidgetApp> {
               ),
               Padding(
                 padding: EdgeInsets.all(15),
-                child: DropdownButton(items: _dropDownMenuItems, onChanged: (String? value) {
+                child: DropdownButton(items: _dpm, onChanged: (String? value) {
                   setState(() {
                     _buttonText = value;
                   });

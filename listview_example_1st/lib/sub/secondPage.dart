@@ -10,10 +10,10 @@ class SecondApp extends StatefulWidget {
 }
 
 class _SecondApp extends State<SecondApp> {
-  final nameController = TextEditingController();
-  int? _radioValue = 0;
-  bool? flyExist = false;
-  String? _imagePath;
+  final nc = TextEditingController();
+  int? _rv = 0;
+  bool? f = false;
+  String? _ip;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _SecondApp extends State<SecondApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextField(
-                controller: nameController,
+                controller: nc,
                 keyboardType: TextInputType.text,
                 maxLines: 1,
               ),
@@ -32,17 +32,17 @@ class _SecondApp extends State<SecondApp> {
                 children: <Widget>[
                   Radio(
                       value: 0,
-                      groupValue: _radioValue,
+                      groupValue: _rv,
                       onChanged: _radioChange),
                   Text('양서류'),
                   Radio(
                       value: 1,
-                      groupValue: _radioValue,
+                      groupValue: _rv,
                       onChanged: _radioChange),
                   Text('파충류'),
                   Radio(
                       value: 2,
-                      groupValue: _radioValue,
+                      groupValue: _rv,
                       onChanged: _radioChange),
                   Text('포유류'),
                 ],
@@ -51,10 +51,10 @@ class _SecondApp extends State<SecondApp> {
                 children: <Widget>[
                   Text('날 수 있나요?'),
                   Checkbox(
-                      value: flyExist,
+                      value: f,
                       onChanged: (bool? check) {
                         setState(() {
-                          flyExist = check;
+                          f = check;
                         });
                       })
                 ],
@@ -67,43 +67,43 @@ class _SecondApp extends State<SecondApp> {
                       GestureDetector(
                         child: Image.asset('repo/images/cow.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/cow.png';
+                          _ip = 'repo/images/cow.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/pig.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/pig.png';
+                          _ip = 'repo/images/pig.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/bee.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/bee.png';
+                          _ip = 'repo/images/bee.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/cat.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/cat.png';
+                          _ip = 'repo/images/cat.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/dog.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/dog.png';
+                          _ip = 'repo/images/dog.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/fox.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/fox.png';
+                          _ip = 'repo/images/fox.png';
                         },
                       ),
                       GestureDetector(
                         child: Image.asset('repo/images/monkey.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/monkey.png';
+                          _ip = 'repo/images/monkey.png';
                         },
                       ),
                     ]),
@@ -112,16 +112,16 @@ class _SecondApp extends State<SecondApp> {
                 child: Text('동물 추가하기'),
                 onPressed: () {
                   var animal = Animal(
-                    animalName: nameController.value.text,
-                    kind: getKind(_radioValue),
-                    imagePath: _imagePath,
-                    flyExist: flyExist
+                    an: nc.value.text,
+                    k: getKind(_rv),
+                    ip: _ip,
+                    f: f
                   );
                   AlertDialog dialog = AlertDialog(
                     title: Text('동물 추가하기'),
                     content: Text(
-                      '이 동물은 ${animal.animalName}입니다. '
-                          '또 동물의 종류는 ${animal.kind}입니다. \n이 동물을 추가하시겠습니까?',
+                      '이 동물은 ${animal.an}입니다. '
+                          '또 동물의 종류는 ${animal.k}입니다. \n이 동물을 추가하시겠습니까?',
                       style: TextStyle(fontSize: 20.0),
                     ),
                     actions: [
@@ -152,7 +152,7 @@ class _SecondApp extends State<SecondApp> {
 
   _radioChange(int? value) {
     setState(() {
-      _radioValue = value;
+      _rv = value;
     });
   }
   getKind(int? radioValue) {
