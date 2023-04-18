@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../animalItem.dart';
-
 
 class CupertinoFirstPage extends StatelessWidget {
   final List<Animal>? animalList;
@@ -15,7 +13,7 @@ class CupertinoFirstPage extends StatelessWidget {
         middle: Text('동물 리스트'),
       ),
       child: ListView.builder(
-          itemBuilder: (context, index) {
+          itemBuilder: (context, position) {
             return Container(
               padding: EdgeInsets.all(5),
               height: 100,
@@ -24,12 +22,12 @@ class CupertinoFirstPage extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Image.asset(
-                        animalList![index].ip!,
+                        animalList![position].ip!,
                         fit: BoxFit.contain,
                         width: 80,
                         height: 80,
                       ),
-                      Text(animalList![index].an!)
+                      Text(animalList![position].an!)
                     ],
                   ),
                   Container(

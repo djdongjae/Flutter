@@ -2,23 +2,20 @@ import 'package:flutter/cupertino.dart';
 import '../animalItem.dart';
 
 class CupertinoSecondPage extends StatefulWidget {
-  final List<Animal>? animalList;
-
-  const CupertinoSecondPage({Key? key, required this.animalList})
-      : super(key: key);
-
   @override
-  State<StatefulWidget> createState() {
-    return _CupertinoSecondPage();
-  }
+  State<StatefulWidget> createState() => _CupertinoSecondPage();
+
+  final List<Animal>? list;
+
+  const CupertinoSecondPage({Key? key, required this.list}) : super(key: key);
 }
 
 class _CupertinoSecondPage extends State<CupertinoSecondPage> {
-  TextEditingController? _textController;
-  int _kindChoice = 0;
-  bool _flyExist = false;
-  String? _imagePath;
-  Map<int, Widget> segmentWidgets = {
+  TextEditingController? _tc;
+  int _kc = 0;
+  bool f = false;
+  String? _ip;
+  Map<int, Widget> sw = {
     0: SizedBox(
       child: Text('양서류', textAlign: TextAlign.center),
       width: 80,
@@ -36,7 +33,7 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
+    _tc = TextEditingController();
   }
 
   @override
@@ -52,18 +49,18 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
               Padding(
                 padding: EdgeInsets.all(10),
                 child: CupertinoTextField(
-                  controller: _textController,
+                  controller: _tc,
                   keyboardType: TextInputType.text,
                   maxLines: 1,
                 ),
               ),
               CupertinoSegmentedControl(
                 padding: EdgeInsets.only(bottom: 20, top: 20),
-                groupValue: _kindChoice,
-                children: segmentWidgets,
+                groupValue: _kc,
+                children: sw,
                 onValueChanged: (int value) {
                   setState(() {
-                    _kindChoice = value;
+                    _kc = value;
                   });
                 },
               ),
@@ -71,10 +68,10 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
                 children: <Widget>[
                   Text('날개가 존재합니까?'),
                   CupertinoSwitch(
-                    value: _flyExist,
+                    value: f,
                     onChanged: (value) {
                       setState(() {
-                        _flyExist = value;
+                        f = value;
                       });
                     },
                   )
@@ -88,37 +85,37 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
                     GestureDetector(
                         child: Image.asset('repo/images/cow.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/cow.png';
+                          _ip = 'repo/images/cow.png';
                         }
                     ),
                     GestureDetector(
                         child: Image.asset('repo/images/pig.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/pig.png';
+                          _ip = 'repo/images/pig.png';
                         }
                     ),
                     GestureDetector(
                         child: Image.asset('repo/images/bee.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/bee.png';
+                          _ip = 'repo/images/bee.png';
                         }
                     ),
                     GestureDetector(
                         child: Image.asset('repo/images/cat.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/cat.png';
+                          _ip = 'repo/images/cat.png';
                         }
                     ),
                     GestureDetector(
                         child: Image.asset('repo/images/fox.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/fox.png';
+                          _ip = 'repo/images/fox.png';
                         }
                     ),
                     GestureDetector(
                         child: Image.asset('repo/images/monkey.png', width: 80),
                         onTap: () {
-                          _imagePath = 'repo/images/monkey.png';
+                          _ip = 'repo/images/monkey.png';
                         }
                     ),
                   ],
@@ -127,11 +124,11 @@ class _CupertinoSecondPage extends State<CupertinoSecondPage> {
               CupertinoButton(
                   child: Text('동물 추가하기'),
                   onPressed: () {
-                    widget.animalList?.add(Animal(
-                        an: _textController?.value.text,
-                        k: getKind(_kindChoice),
-                        ip: _imagePath,
-                        f: _flyExist));
+                    widget.list?.add(Animal(
+                        an: _tc?.value.text,
+                        k: getKind(_kc),
+                        ip: _ip,
+                        f: f));
                   })
             ], mainAxisAlignment: MainAxisAlignment.center,
           ),

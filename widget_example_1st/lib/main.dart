@@ -22,18 +22,18 @@ class WidgetApp extends StatefulWidget {
 class _WidgetExampleState extends State<WidgetApp> {
   String sum = '';
   TextEditingController v1 = TextEditingController();
-  TextEditingController value2 = TextEditingController();
-  List _buttonList = ['더하기', '빼기', '곱하기', '나누기'];
+  TextEditingController v2 = TextEditingController();
+  List _bL = ['더하기', '빼기', '곱하기', '나누기'];
   List<DropdownMenuItem<String>> _dpm = new List.empty(growable: true);
-  String? _buttonText;
+  String? _bt;
 
   @override
   void initState() {
     super.initState();
-    for(var item in _buttonList) {
+    for(var item in _bL) {
       _dpm.add(DropdownMenuItem(value: item, child: Text(item)));
     }
-    _buttonText = _dpm[0].value;
+    _bt = _dpm[0].value;
   }
 
   @override
@@ -56,7 +56,7 @@ class _WidgetExampleState extends State<WidgetApp> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
-                child: TextField(keyboardType: TextInputType.number, controller: value2),
+                child: TextField(keyboardType: TextInputType.number, controller: v2),
               ),
               Padding(
                 padding: EdgeInsets.all(15),
@@ -64,23 +64,23 @@ class _WidgetExampleState extends State<WidgetApp> {
                   child: Row(
                     children: <Widget>[
                       Icon(Icons.add),
-                      Text(_buttonText!)
+                      Text(_bt!)
                     ],
                   ),
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
                   onPressed: () {
                     setState(() {
-                      var value1Int = double.parse(v1.value.text);
-                      var value2Int = double.parse(value2.value.text);
+                      var v1Int = double.parse(v1.value.text);
+                      var v2Int = double.parse(v2.value.text);
                       var result;
-                      if (_buttonText == '더하기') {
-                        result = value1Int + value2Int;
-                      } else if (_buttonText == '빼기') {
-                        result = value1Int - value2Int;
-                      } else if (_buttonText == '곱하기') {
-                        result = value1Int * value2Int;
+                      if (_bt == '더하기') {
+                        result = v1Int + v2Int;
+                      } else if (_bt == '빼기') {
+                        result = v1Int - v2Int;
+                      } else if (_bt == '곱하기') {
+                        result = v1Int * v2Int;
                       } else {
-                        result = value1Int / value2Int;
+                        result = v1Int / v2Int;
                       }
                       sum = '$result';
                     });
@@ -98,9 +98,9 @@ class _WidgetExampleState extends State<WidgetApp> {
                 padding: EdgeInsets.all(15),
                 child: DropdownButton(items: _dpm, onChanged: (String? value) {
                   setState(() {
-                    _buttonText = value;
+                    _bt = value;
                   });
-                }, value: _buttonText,),
+                }, value: _bt,),
               )
             ],
           ),

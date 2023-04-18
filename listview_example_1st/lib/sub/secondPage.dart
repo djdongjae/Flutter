@@ -4,9 +4,10 @@ import '../animalItem.dart';
 class SecondApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SecondApp();
+
   List<Animal>? list;
 
-  SecondApp({Key? key, @required this.list}) : super(key: key);
+  SecondApp({Key? key, required this.list}) : super(key: key);
 }
 
 class _SecondApp extends State<SecondApp> {
