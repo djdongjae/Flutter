@@ -68,6 +68,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          _createTodo();
+        },
+      ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -78,5 +84,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
     todoList.add("Flutter 공부하기");
     todoList.add("운동하기");
+  }
+
+  Future<void> _createTodo() async{
+    Future<String> todo = Navigator.of(context).pushNamed("/create") as Future<String>;
+    setState(() {
+      todoList.add(todo as String);
+    });
   }
 }

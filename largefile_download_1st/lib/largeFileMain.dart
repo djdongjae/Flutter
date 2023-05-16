@@ -25,44 +25,71 @@ class _LargeFileMain extends State<LargeFileMain> {
         body: Center(
             child: downloading
                 ? Container(
-              height: 120.0,
-              width: 200.0,
-              child: Card(
-                color: Colors.black,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Text(
-                      'Downloading File: $progressString',
-                      style: TextStyle(
-                        color: Colors.white,
+                    height: 120.0,
+                    width: 200.0,
+                    child: Card(
+                      color: Colors.black,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Text(
+                            'Downloading File: $progressString',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-            )
+                    ),
+                  )
                 : FutureBuilder(
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    print('none');
-                    return Text('데이터 없음');
-                }
-              },
-            )
-            floatingActionButton: FloatingActionButton(
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          print('none');
+                          return Text('데이터 없음');
+                        case ConnectionState.waiting:
+                          print('waiting');
+                          return CircularProgressIndicator();
+                        case ConnectionState.active:
+                          print('active');
+                          return CircularProgressIndicator();
+                        case ConnectionState.done:
+                          print('done');
+                          if (snapshot.hasData) {
+                            return snapshot.data as Widget;
+                          }
+                      }
+                      print('end process');
+                      return Text('데이터 없음');
+                    },
+                    future: downloadWidget(file),
+                  )),
+        floatingActionButton: FloatingActionButton(
             onPressed: () {
-    downloadFile();
-    },
-        child: Icon(Icons.file_download)
-    )
-    )
-    );
+              downloadFile();
+            },
+            child: Icon(Icons.file_download)));
+  }
+
+  Future<Widget> downloadWidget(String filePath) async {
+    File file = File(filePath);
+    bool exist = await file.exists();
+    new FileImage(file).evict();
+
+    if(exist) {
+      return Center(
+        child: Column(
+          children: <Widget>[Image.file(File(filePath))],
+        ),
+      );
+    } else {
+      return Text('No Data');
+    }
   }
 
   Future<void> downloadFile() async {
@@ -71,13 +98,13 @@ class _LargeFileMain extends State<LargeFileMain> {
       var dir = await getApplicationDocumentsDirectory();
       await dio.download(imgUrl, '${dir.path}/myimage.jpg',
           onReceiveProgress: (rec, total) {
-            print('Rec: $rec, Total: $total');
-            file = '${dir.path}/myimage.jpg';
-            setState(() {
-              downloading = true;
-              progressString = ((rec / total) * 100).toStringAsFixed(0) + '%';
-            });
-          });
+        print('Rec: $rec, Total: $total');
+        file = '${dir.path}/myimage.jpg';
+        setState(() {
+          downloading = true;
+          progressString = ((rec / total) * 100).toStringAsFixed(0) + '%';
+        });
+      });
     } catch (e) {
       print(e);
     }
