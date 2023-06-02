@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/' : (context) => MaterialMain(title: "$TITLE_APP for Android", databaseProvider: databaseProvider),
         '/create' : (context) => TodoCreate(title: "$TITLE_APP for Android",),
-        '/finished' : (context) => TodoFinished(title: "$TITLE_APP for Android",),
+//        '/finished' : (context) => TodoFinished(title: "$TITLE_APP for Android",),
       },
     );
   }

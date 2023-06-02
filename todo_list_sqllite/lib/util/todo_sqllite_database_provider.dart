@@ -32,4 +32,16 @@ class TodoSQLiteDatabaseProvider {
     Database database = await _getDatabase();
     database.insert(TODOS_TABLENAME, todo.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  Future<List<Todo>> getTodos() async {
+    Database database = await _getDatabase();
+    var maps = await database.query(TODOS_TABLENAME);
+
+    List<Todo> todoList = List.empty(growable: true);
+    for(Map<String, dynamic> map in maps) {
+      todoList.add(Todo.fromMap(map));
+    }
+
+    return todoList;
+  }
 }
