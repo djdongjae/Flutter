@@ -20,6 +20,13 @@ class HttpApp extends StatefulWidget {
 
 class _HttpApp extends State<HttpApp> {
   String result = '';
+  List? data;
+
+  @override
+  void initState() {
+    super.initState();
+    data = new List.empty(growable: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,35 @@ class _HttpApp extends State<HttpApp> {
       ),
       body: Container(
         child: Center(
-          child: Text('$result'),
+          child: data!.length == 0
+          ? Text(
+            '데이터가 없습니다.',
+            style: TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
+          )
+          : ListView.builder(
+            itemBuilder: (context, index) {
+              return Card(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Text(data![index]['title'].toString()),
+                      Text(data![index]['authors'].toString()),
+                      Text(data![index]['sale_price'].toString()),
+                      Text(data![index]['status'].toString()),
+                      Image.network(
+                        data![index]['thumbnail'],
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.contain,
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: data!.length,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -44,8 +79,12 @@ class _HttpApp extends State<HttpApp> {
   Future<String> getJSONData() async {
     var url = 'https://dapi.kakao.com/v3/search/book?target=title&query=doit';
     var response = await http.get(Uri.parse(url),
-      headers: {"Authorization": "KakaoAKb98769026e080b84e737d37ab8056e7c"});
-    print(response.body);
-    return "Successful";
+      headers: {"Authorization": "KakaoAK b98769026e080b84e737d37ab8056e7c"});
+    setState(() {
+      var dataConvertedToJSON = json.decode(response.body);
+      List result = dataConvertedToJSON['documnets'];
+      data!.addAll(result);
+    });
+    return response.body;
   }
 }
