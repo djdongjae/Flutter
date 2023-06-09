@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     Future<Database> database = initDatabase();
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Todo List',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -91,7 +91,7 @@ class _DatabaseApp extends State<DatabaseApp> {
                               children: <Widget>[
                                 Text(todo.content!),
                                 Text(
-                                    '체크 : ${todo.active == 1 ? 'true' : 'false'}'),
+                                    '체크 : ${todo.active == 1 ? '완료' : '미완료'}'),
                                 Container(
                                   height: 1,
                                   color: Colors.blue,
@@ -99,65 +99,57 @@ class _DatabaseApp extends State<DatabaseApp> {
                               ],
                             ),
                           ),
-                          /*onTap: () async {
-                            Todo result = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('${todo.id} : ${todo.title}'),
-                                    content: Text('Todo를 체크하시겠습니까?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            todo.active == 1
-                                                ? todo.active = 0
-                                                : todo.active = 1;
-                                          });
-                                          Navigator.of(context).pop(todo);
-                                        },
-                                        child: Text('예'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(todo);
-                                        },
-                                        child: Text('아니요'),
-                                      )
-                                    ],
-                                  );
-                                });
-                            _updateTodo(result);
-                          },*/
                           onTap: () async {
                             TextEditingController controller =
                                 new TextEditingController(text: todo.content);
+
+                            bool isChecked = (todo.active == 1)? true: false;
 
                             Todo result = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Text('${todo.id} : ${todo.title}'),
-                                    content: TextField(
-                                      controller: controller,
-                                      keyboardType: TextInputType.text,
+                                    content: StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return Container(
+                                          child: Column(
+                                            children: <Widget>[
+                                              TextField(
+                                                controller: controller,
+                                                // keyboardType: TextInputType.text,
+                                                decoration: InputDecoration(
+                                                  labelText: "할일"
+                                                ),
+                                              ),
+                                              CheckboxListTile(
+                                                title: Text("완료 여부"),
+                                                value: isChecked,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    isChecked = value!;
+                                                  });
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
                                     ),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          todo.active == 1
-                                              ? todo.active = 0
-                                              : todo.active = 1;
+                                          todo.active = isChecked? 1: 0;
                                           todo.content = controller.value.text;
                                           Navigator.of(context).pop(todo);
                                         },
-                                        child: Text('예'),
+                                        child: Text('수정'),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop(todo);
                                         },
-                                        child: Text('아니요'),
+                                        child: Text('취소'),
                                       )
                                     ],
                                   );

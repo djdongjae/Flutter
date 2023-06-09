@@ -28,7 +28,7 @@ class TodoSQLiteDatabaseProvider {
     );
   }
 
-  Future<void> inserTodo(Todo todo) async {
+  Future<void> insertTodo(Todo todo) async {
     Database database = await _getDatabase();
     database.insert(TODOS_TABLENAME, todo.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -43,5 +43,15 @@ class TodoSQLiteDatabaseProvider {
     }
 
     return todoList;
+  }
+
+  Future<void> updateTodo(Todo todo) async {
+    Database database = await _getDatabase();
+    database.update(TODOS_TABLENAME, todo.toMap(), where: 'id = ?', whereArgs: [todo.id]);
+  }
+
+  Future<void> deleteTodo(Todo todo) async {
+    Database database = await _getDatabase();
+    database.delete(TODOS_TABLENAME, where: 'id = ?', whereArgs: [todo.id]);
   }
 }
