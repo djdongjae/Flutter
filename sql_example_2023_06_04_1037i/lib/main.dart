@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     Future<Database> database = initDatabase();
 
     return MaterialApp(
-      title: 'Todo List',
+      title: 'Todo 리스트',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -63,7 +63,7 @@ class _DatabaseApp extends State<DatabaseApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Database Example'),
+        title: Text('Todo 리스트'),
       ),
       body: Container(
         child: Center(
@@ -139,7 +139,7 @@ class _DatabaseApp extends State<DatabaseApp> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          todo.active = isChecked? 1: 0;
+                                          todo.active = isChecked ? 1 : 0;
                                           todo.content = controller.value.text;
                                           Navigator.of(context).pop(todo);
                                         },
