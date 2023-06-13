@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'todo.dart';
+import 'addTodo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,106 +14,222 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Future<Database> database = initDatabase();
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Todo List',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => DatabaseApp(database),
+        '/add': (context) => AddTodoApp(database)
+      },
     );
+  }
+
+  Future<Database> initDatabase() async {
+    return openDatabase(join(await getDatabasesPath(), 'todo_database.db'),
+        onCreate: (db, version) {
+      return db.execute(
+          "CREATE TABLE todos(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, active INTEGER)");
+    }, version: 1);
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class DatabaseApp extends StatefulWidget {
+  final Future<Database> db;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  DatabaseApp(this.db);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _DatabaseApp();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _DatabaseApp extends State<DatabaseApp> {
+  Future<List<Todo>>? todoList;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    todoList = getTodos();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Todo 리스트'),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Container(
+        child: Center(
+          child: FutureBuilder(
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return CircularProgressIndicator();
+                case ConnectionState.waiting:
+                  return CircularProgressIndicator();
+                case ConnectionState.active:
+                  return CircularProgressIndicator();
+                case ConnectionState.done:
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        Todo todo = (snapshot.data as List<Todo>)[index];
+                        return ListTile(
+                          title: Text(
+                            todo.title!,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          subtitle: Container(
+                            child: Column(
+                              children: <Widget>[
+                                Text(todo.content!),
+                                Text('체크: ${todo.active == 1 ? '완료' : '미완료'}'),
+                                Container(height: 1, color: Colors.blue)
+                              ],
+                            ),
+                          ),
+                          onTap: () async {
+                            TextEditingController controller =
+                                new TextEditingController(text: todo.content);
+                            bool? isChecked = (todo.active == 1) ? true : false;
+                            Todo result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('${todo.id} : ${todo.title}'),
+                                    content: StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return Container(
+                                          child: Column(
+                                            children: <Widget>[
+                                              TextField(
+                                                controller: controller,
+                                                decoration: InputDecoration(
+                                                    labelText: '할일'),
+                                              ),
+                                              CheckboxListTile(
+                                                title: Text('완료 여부'),
+                                                value: isChecked,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    isChecked = value!;
+                                                  });
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () {
+                                            todo.active = isChecked! ? 1 : 0;
+                                            todo.content =
+                                                controller.value.text;
+                                            Navigator.of(context).pop(todo);
+                                          },
+                                          child: Text('수정')),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(todo);
+                                        },
+                                        child: Text('취소'),
+                                      )
+                                    ],
+                                  );
+                                });
+                            _updateTodo(result);
+                          },
+                          onLongPress: () async {
+                            Todo result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('${todo.id} : ${todo.title}'),
+                                    content: Text('${todo.content}를 삭제하시겠습니까?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(todo);
+                                        },
+                                        child: Text('예'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('아니요'),
+                                      )
+                                    ],
+                                  );
+                                });
+                            _deleteTodo(result);
+                          },
+                        );
+                      },
+                      itemCount: (snapshot.data as List<Todo>).length,
+                    );
+                  } else {
+                    return Text('No Data');
+                  }
+              }
+            },
+            future: todoList,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: () async {
+          final todo = await Navigator.of(context).pushNamed('/add');
+          if (todo != null) {
+            _insertTodo(todo as Todo);
+          }
+        }, child: Icon(Icons.add),
+      ), floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  void _insertTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database.insert('todos', todo.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    setState(() {
+      todoList = getTodos();
+    });
+  }
+
+  Future<List<Todo>> getTodos() async {
+    final Database database = await widget.db;
+    final List<Map<String, dynamic>> maps = await database.query('todos');
+    return List.generate(maps.length, (i) {
+      int active = maps[i]['active'] == 1 ? 1 : 0;
+      return Todo(
+          title: maps[i]['title'].toString(),
+          content: maps[i]['content'].toString(),
+          active: active,
+          id: maps[i]['id']);
+    });
+  }
+
+  void _updateTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database
+        .update('todos', todo.toMap(), where: 'id = ?', whereArgs: [todo.id]);
+    setState(() {
+      todoList = getTodos();
+    });
+  }
+
+  void _deleteTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database.delete('todos', where: 'id = ?', whereArgs: [todo.id]);
+    setState(() {
+      todoList = getTodos();
+    });
   }
 }

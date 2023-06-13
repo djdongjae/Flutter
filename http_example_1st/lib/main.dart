@@ -21,23 +21,23 @@ class HttpApp extends StatefulWidget {
 class _HttpApp extends State<HttpApp> {
   String result = '';
   List? data;
-  TextEditingController? _editingController;
-  ScrollController? _scrollController;
-  int page = 1;
+  TextEditingController? _ec;
+  ScrollController? _sc;
+  int pg = 1;
 
   @override
   void initState() {
     super.initState();
     data = new List.empty(growable: true);
-    _editingController = new TextEditingController();
-    _scrollController = new ScrollController();
+    _ec = new TextEditingController();
+    _sc = new ScrollController();
 
-    _scrollController!.addListener(() {
-      if (_scrollController!.offset >=
-              _scrollController!.position.maxScrollExtent &&
-          !_scrollController!.position.outOfRange) {
+    _sc!.addListener(() {
+      if (_sc!.offset >=
+              _sc!.position.maxScrollExtent &&
+          !_sc!.position.outOfRange) {
         print('bottom');
-        page++;
+        pg++;
         getJSONData();
       }
     });
@@ -48,7 +48,7 @@ class _HttpApp extends State<HttpApp> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          controller: _editingController,
+          controller: _ec,
           style: TextStyle(color: Colors.white),
           keyboardType: TextInputType.text,
           decoration: InputDecoration(hintText: '검색어를 입력하세요'),
@@ -99,12 +99,12 @@ class _HttpApp extends State<HttpApp> {
                       );
                     },
                     itemCount: data!.length,
-                    controller: _scrollController,
+                    controller: _sc,
                   )),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          page = 1;
+          pg = 1;
           data!.clear();
           getJSONData();
         },
@@ -115,7 +115,7 @@ class _HttpApp extends State<HttpApp> {
 
   Future<String> getJSONData() async {
     var url = 'https://dapi.kakao.com/v3/search/book?'
-        'target=title&page=$page&query=${_editingController!.value.text}';
+        'target=title&page=$pg&query=${_ec!.value.text}';
     var response = await http.get(Uri.parse(url),
         headers: {"Authorization": "KakaoAK b98769026e080b84e737d37ab8056e7c"});
     setState(() {
